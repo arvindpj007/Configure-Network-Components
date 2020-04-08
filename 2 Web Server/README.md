@@ -37,7 +37,7 @@ These tasks requires 3 VM hosts: `lab1` (10.0.2.8), `lab2` (10.0.2.9) and `lab3`
 - This task requires to install nodejs on lab3 from package manager and create a HTTP application helloworld.js listening on port 8080 that serves a web page
 with a text "Hello world!". The steps required are enumerated below:
 
->Node.js 
+>[Node.js](https://nodejs.org/en/about/ "Node.js reference") is an asynchronous event-driven JavaScript runtime, designed to build scalable network applications.
 
 1. On `lab3`, nodejs is installed as follows:
 
@@ -71,9 +71,38 @@ with a text "Hello world!". The steps required are enumerated below:
     
     ![Nodejs helloworld](./images/3_nodejs_helloworld.png)
 
-- 
+- The contents of the JavaScript file helloworld.js is explained below:
 
--  
+1. 
+    ```javascript 
+    var http = require("http");
+    ```
+
+    The require directive is to load the http module and store the returned HTTP instance into an http variable
+2. 
+   ```javascript 
+    http.createServer()
+    ``` 
+    The http instance calls createServer() method to create a server instance.
+
+3. 
+    ```javascript 
+    server.listen(8080)
+    ``` 
+    To bind it to port 8080, the listen method is called associated with the server instance.
+
+4. ```javascript 
+    res
+    ```
+
+    res is the response object that can responds back to the browser dependinng on the values set using its associated parameters.
+
+-  Node.js is event driven:
+
+    Event-Driven Programming makes use of the following concepts:
+    - An Event Handler is a callback function that will be called when an event is triggered.
+    - A Main Loop listens for event triggers and calls the associated event handler for that event.
+
 
 ## Configuring SSL for Apache2
 
@@ -119,9 +148,18 @@ with a text "Hello world!". The steps required are enumerated below:
 
     ![Served Untrusted Site](./images/5_loads_webpage.png)
 
--
+- Certificate and its neccessity in the context of web servers:
 
--
+    If the signature is valid, and the software examining the certificate trusts the issuer, then it can use that key to communicate securely with the certificate's subject.
+    In TLS, a certificate's subject is typically a computer or other device, though TLS certificates may identify organizations or individuals in addition to their core role in identifying devices
+
+    In TLS (an updated replacement for SSL), a server is required to present a certificate as part of the initial connection setup. A client connecting to that server will perform the certification path validation algorithm:
+    1. The subject of the certificate matches the hostname (ie. domain name) to which the client is trying to connect.
+    2. The certificate is signed by a trusted certificate authority.
+
+- PKI:
+
+    A public key infrastructure (PKI) is a set of roles, policies, and procedures needed to create, manage, distribute, use, store & revoke digital certificates and manage public-key encryption. It is required for activities where simple passwords are an inadequate authentication method and more rigorous proof is required to confirm the identity of the parties involved in the communication and to validate the information being transferred. (eg: Internet Banking)
 
 ## Enforcing HTTPS
 
@@ -173,9 +211,24 @@ with a text "Hello world!". The steps required are enumerated below:
     
     It can be seen that the query will change from http://localhost/~lab2/secure_session to https://localhost/~lab2/secure_session during execution.
 
-- 
+- HSTS:
 
-- 
+    HTTP Strict Transport Security (HSTS) is a web security policy mechanism that helps to protect websites against protocol downgrade attacks and cookie hijacking. It allows web servers to declare that web browsers (or other complying user agents) should interact with it using only secure HTTPS connections and never via the insecure HTTP protocol.
+
+- .htaccess:
+
+    .htaccess is a configuration file for use on web servers running the Apache Web Server software. When a .htaccess file is placed in a directory which is in turn 'loaded via the Apache Web Server', then the .htaccess file is detected and executed by the Apache Web Server software. 
+
+    When to use .htaccess?
+        
+    .htaccess files should be used in a case where the content providers need to make configuration changes to the server on a per-directory basis, but do not have root access on the server system. In the event that the server administrator is not willing to make frequent configuration changes, it might be desirable to permit individual users to make these changes in .htaccess files for themselves. This is particularly true, for example, in cases where ISPs are hosting multiple user sites on a single machine, and want their users to be able to alter their configuration.
+
+    What should be considered:
+
+    1. The first of these is performance. When AllowOverride is set to allow the use of .htaccess files, httpd will look in every directory for .htaccess files. Thus, permitting .htaccess files causes a performance hit, whether or not you actually even use them. Also, the .htaccess file is loaded every time a document is requested.
+
+    2. Secondly, for each file access out of that directory, there are 4 additional file-system accesses, even if none of those files are present. (Note that this would only be the case if .htaccess files were enabled for /, which is not usually the case.)
+
 
 ## Nginx as a Reverse Proxy
 
@@ -219,6 +272,6 @@ with a text "Hello world!". The steps required are enumerated below:
 
     ![Reverse Proxy - Nodejs](./images/7_lab1_node.png)
 
-- 
+- NGINX:
 
-- 
+    NGINX is a powerful web server and uses a non-threaded, event-driven architecture. It can also do other important things, such as load balancing, HTTP caching, or be used as a reverse proxy. The main purpose of the master process is to read and evaluate configuration, and maintain worker processes. Worker processes do actual processing of requests. nginx employs event-based model and OS-dependent mechanisms to efficiently distribute requests among worker processes.
