@@ -179,4 +179,46 @@ with a text "Hello world!". The steps required are enumerated below:
 
 ## Nginx as a Reverse Proxy
 
-- For this task, nginx is installed on `lab1` and it is configured to act as a gateway to both Apache2 at lab2 and Node.js at lab3. Specifically HTTP requests to http://lab1/apache are directed to Apache2 server listening on lab2:80 and requests to http://lab1/node to Node.js server on lab3:8080.
+- For this task, nginx is installed on `lab1` and it is configured to act as a gateway to both Apache2 at lab2 and Node.js at lab3. Specifically HTTP requests to http://lab1/apache are directed to Apache2 server listening on lab2:80 and requests to http://lab1/node to Node.js server on lab3:8080. The required steps are enumerated below:
+
+1. In lab1, nginx is installed:
+
+        sudo apt-get update
+        sudo apt-get upgrade
+        sudo apt-get install nginx
+
+2. Reverse proxy configuration is specified in the file `nodeapp.conf` that is placed in `/etc/nginx/conf.d/`. The contents of the configuration file is:
+
+    ```
+    server {
+    listen 80;
+    listen [::]:80;
+
+    server_name localhost;
+
+    location /apache {
+        rewrite ^/apache(.*) /$1 break;
+        proxy_pass https://10.0.2.4:443;
+    }
+
+    location /node {
+        rewrite ^/node(.*) /$1 break;
+        proxy_pass http://10.0.2.15:8080;
+    }
+
+    }
+    ```
+
+3. Once the servers are verified to be running, the reverse proxy can be tested using curl or lynx:
+
+        lynx http://localhost/apache
+
+    ![Reverse Proxy - Apache](./images/6_lab1_apache.png)
+
+        lynx http://localhost/node
+
+    ![Reverse Proxy - Nodejs](./images/7_lab1_node.png)
+
+- 
+
+- 
